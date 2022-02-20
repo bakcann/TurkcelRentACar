@@ -39,7 +39,11 @@ public class CarManager implements CarService{
 	@Override
 	public void add(CreateCarRequest createCarRequest) throws BusinessException {
 		Car car = this.modelMapperService.forRequest().map(createCarRequest, Car.class);
+		if( !checkIfCarId(car.getCarId())) {
+			
+		}else {
 			this.carDao.save(car);
+		}
 		
 		
 	}
@@ -52,28 +56,72 @@ public class CarManager implements CarService{
 			ListCarDto response = this.modelMapperService.forDto().map(result, ListCarDto.class);
 		return response;
 		}
-		throw new BusinessException("Bu id boş.");	
+		throw new BusinessException("Bu id kullanılmamaktadır.");	
 	}
 
 	@Override
 	public void delete(DeleteCarRequest deleteCarRequest) throws BusinessException {
-		Car car = this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
-		if(this.carDao.getByCarId(car.getCarId())==null) {
-			throw new BusinessException("Böyle bir id mevcut değil.");
+		
+		Car car=this.modelMapperService.forRequest().map(deleteCarRequest, Car.class);
+		if(!checkIfCarId(car.getCarId())) {
+		}else {
+			this.carDao.deleteById(car.getCarId());
 		}
-		this.carDao.deleteById(car.getCarId());
 		
 	}
 
 	@Override
 	public void update(UpdateCarRequest updateCarRequest) throws BusinessException {
+		
 		Car car = this.modelMapperService.forRequest().map(updateCarRequest, Car.class);
-		if(this.carDao.getByCarId(car.getCarId())==null) {
-			throw new BusinessException("Böyle bir id mevcut değil.");
+		
+		if( !checkIfCarId(car.getCarId())|| !checkIfDailyPrice(car.getDailyPrice())||!checkIfModelYear(car.getModelYear())||!checkIfDescription(car.getDescription())) {
+			
+				
+		}else {
+			this.carDao.save(car);
 		}
-		this.carDao.save(car);
 		
 	}
+	
+	private boolean checkIfCarId(int carId)throws BusinessException{
+		if(this.carDao.getByCarId(carId)==null) {
+			throw new BusinessException("Böyle bir id mevcut değil.");
+		}
+		return true;
+		
+	}
+	private boolean checkIfDailyPrice(double dailyPrice) throws BusinessException {
+		
+		
+		if(dailyPrice==0){
+			throw new BusinessException("Fiyat 0 olamaz.");
+		}
+		return true;
+		
+	}
+	
+	private boolean checkIfModelYear(int modelYear) throws BusinessException {
+		
+		
+		if(modelYear==0){
+			throw new BusinessException("Arabanın üretim tarihi 0 olamaz.");
+		}
+		return true;
+		
+	}
+	private boolean checkIfDescription(String description) throws BusinessException {
+		if(org.apache.commons.lang3.StringUtils.isBlank(description)) {
+			throw new BusinessException("Açıklama boş olamaz.");
+		} return true;
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

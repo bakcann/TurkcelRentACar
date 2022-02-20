@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import turkcell.rentacar1.business.abstracts.ColorService;
 import turkcell.rentacar1.business.dtos.ListColorDto;
 import turkcell.rentacar1.business.requests.CreateColorRequest;
+import turkcell.rentacar1.business.requests.DeleteColorRequest;
+import turkcell.rentacar1.business.requests.UpdateColorRequest;
 import turkcell.rentacar1.core.concretes.BusinessException;
 
 @RestController
@@ -39,6 +41,16 @@ public class ColorsController {
 	@GetMapping("/getcolorid")
 	public ListColorDto getByColorId(int colorId) throws BusinessException{
 		return this.colorService.getByColorId(colorId);
+	}
+	
+	@PostMapping("/delete")
+	public void delete(@RequestBody DeleteColorRequest deleteColorRequest ) throws BusinessException{
+		this.colorService.delete(deleteColorRequest);
+	}
+	
+	@PostMapping("/update")
+	public void update(@RequestBody UpdateColorRequest updateColorRequest)  throws BusinessException{
+		this.colorService.update(updateColorRequest);
 	}
 
 	

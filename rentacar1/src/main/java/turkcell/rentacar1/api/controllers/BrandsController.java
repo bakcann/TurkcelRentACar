@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import turkcell.rentacar1.business.abstracts.BrandService;
 import turkcell.rentacar1.business.dtos.ListBrandDto;
 import turkcell.rentacar1.business.requests.CreateBrandRequest;
+import turkcell.rentacar1.business.requests.DeleteBrandRequest;
+import turkcell.rentacar1.business.requests.UpdateBrandRequest;
 import turkcell.rentacar1.core.concretes.BusinessException;
 
 @RestController
@@ -39,6 +41,16 @@ public class BrandsController {
 	@GetMapping("/getbrandid")
 	public ListBrandDto getByBrandId(int brandId) throws BusinessException{
 		return this.brandService.getByBrandId(brandId);
+	}
+	
+	@PostMapping("/delete")
+	public void delete(@RequestBody DeleteBrandRequest deleteBrandRequest) throws BusinessException{
+		this.brandService.delete(deleteBrandRequest);
+	}
+	
+	@PostMapping("/update")
+	public void update(@RequestBody UpdateBrandRequest updateBrandRequest) throws BusinessException{
+		this.brandService.update(updateBrandRequest);
 	}
 
 
