@@ -15,6 +15,8 @@ import turkcell.rentacar1.business.requests.CreateColorRequest;
 import turkcell.rentacar1.business.requests.DeleteColorRequest;
 import turkcell.rentacar1.business.requests.UpdateColorRequest;
 import turkcell.rentacar1.core.concretes.BusinessException;
+import turkcell.rentacar1.core.utilities.results.DataResult;
+import turkcell.rentacar1.core.utilities.results.Result;
 
 @RestController
 @RequestMapping("/api/colors")
@@ -29,28 +31,28 @@ public class ColorsController {
 	}
 	
 	@GetMapping("/getall")
-	public List<ListColorDto> getAll(){
+	public DataResult<List<ListColorDto>> getAll(){
 		return colorService.getAll();
 	}
 	
 	@PostMapping("/add")
-	public void add(@RequestBody CreateColorRequest createColorRequest) throws BusinessException{
-		this.colorService.add(createColorRequest);
+	public Result add(@RequestBody CreateColorRequest createColorRequest) throws BusinessException{
+		return this.colorService.add(createColorRequest);
 	}
 	
 	@GetMapping("/getcolorid")
-	public ListColorDto getByColorId(int colorId) throws BusinessException{
+	public DataResult<ListColorDto> getByColorId(int colorId) throws BusinessException{
 		return this.colorService.getByColorId(colorId);
 	}
 	
 	@PostMapping("/delete")
-	public void delete(@RequestBody DeleteColorRequest deleteColorRequest ) throws BusinessException{
-		this.colorService.delete(deleteColorRequest);
+	public Result delete(@RequestBody DeleteColorRequest deleteColorRequest ) throws BusinessException{
+		 return this.colorService.delete(deleteColorRequest);
 	}
 	
 	@PostMapping("/update")
-	public void update(@RequestBody UpdateColorRequest updateColorRequest)  throws BusinessException{
-		this.colorService.update(updateColorRequest);
+	public Result update(@RequestBody UpdateColorRequest updateColorRequest)  throws BusinessException{
+		return this.colorService.update(updateColorRequest);
 	}
 
 	

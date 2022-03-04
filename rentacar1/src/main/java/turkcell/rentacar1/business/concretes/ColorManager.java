@@ -13,6 +13,12 @@ import turkcell.rentacar1.business.requests.DeleteColorRequest;
 import turkcell.rentacar1.business.requests.UpdateColorRequest;
 import turkcell.rentacar1.core.concretes.BusinessException;
 import turkcell.rentacar1.core.utilities.mapping.ModelMapperService;
+import turkcell.rentacar1.core.utilities.results.DataResult;
+import turkcell.rentacar1.core.utilities.results.ErrorDataResult;
+import turkcell.rentacar1.core.utilities.results.ErrorResult;
+import turkcell.rentacar1.core.utilities.results.Result;
+import turkcell.rentacar1.core.utilities.results.SuccessDataResult;
+import turkcell.rentacar1.core.utilities.results.SuccessResult;
 import turkcell.rentacar1.dataAccess.abstracts.ColorDao;
 import turkcell.rentacar1.entities.concretes.Color;
 
@@ -30,53 +36,54 @@ public class ColorManager implements ColorService{
 	}
 
 	@Override
-	public List<ListColorDto> getAll() {
+	public DataResult<List<ListColorDto>> getAll() {
 		var result = this.colorDao.findAll();
-		List<ListColorDto> response =result.stream().map(color->this.modelMapperService.forDto().map(color, ListColorDto.class)).collect(Collectors.toList());
-		return response;
+		List<ListColorDto> response =result.stream()
+				.map(color->this.modelMapperService.forDto()
+						.map(color, ListColorDto.class)).collect(Collectors.toList());
+		return new SuccessDataResult<List<ListColorDto>>(response);
 	}
 
 	@Override
-	public void add(CreateColorRequest createColorRequest) throws BusinessException {
+	public Result add(CreateColorRequest createColorRequest) throws BusinessException {
 		Color color = this.modelMapperService.forRequest().map(createColorRequest, Color.class);
-		if( !checkIfColorId(color.getColorId())|| !checkIfColorName(color.getColorName())) {
-			
-		}else {
+		if(checkIfColorName(color.getColorName())) {
 			this.colorDao.save(color);
+			return new SuccessResult("Renk eklendi");
 		}
-		
+		return new ErrorResult("Renk eklenemedi.");
 	}
 
 	@Override
-	public ListColorDto getByColorId(int colorId) throws BusinessException {
+	public DataResult<ListColorDto> getByColorId(int colorId)  {
 		var result = this.colorDao.getByColorId(colorId);
 		if(result!=null) {
 			ListColorDto response = this.modelMapperService.forDto().map(result, ListColorDto.class);
-		return response;
+		return new SuccessDataResult<ListColorDto>(response);
 		}
-		throw new BusinessException("Bu id boş.");	
+		return new ErrorDataResult<ListColorDto>("Bu id boş.");	
 	}
 
 	@Override
-	public void delete(DeleteColorRequest deleteColorRequest) throws BusinessException {
+	public Result delete(DeleteColorRequest deleteColorRequest) throws BusinessException {
 		Color color=this.modelMapperService.forRequest().map(deleteColorRequest, Color.class);
-		if(!checkIfColorId(color.getColorId())) {
-		}else {
+		if(checkIfColorId(color.getColorId())) {
 			this.colorDao.deleteById(color.getColorId());
+			return new SuccessResult("Renk silindi.");
 		}
+		return new ErrorResult("Renk silinemedi.");
 	}
 
 	@Override
-	public void update(UpdateColorRequest updateColorRequest) throws BusinessException {
+	public Result update(UpdateColorRequest updateColorRequest) throws BusinessException {
 		
 		Color color = this.modelMapperService.forRequest().map(updateColorRequest, Color.class);
 		
-		if(!checkIfColorId(color.getColorId()) || !checkIfUpdateColorName(color.getColorName())) {
-			
-		}else {
+		if(checkIfColorId(color.getColorId()) && checkIfUpdateColorName(color.getColorName())) {
 			this.colorDao.save(color);
-			
+			return new SuccessResult("Renk güncellendi.");
 		}
+		return new ErrorResult("Renk güncellenemedi.");
 	
 	}
 		
@@ -89,10 +96,11 @@ public class ColorManager implements ColorService{
 	}
 	
 	private boolean checkIfColorId(int colorId)throws BusinessException{
-		if(this.colorDao.getByColorId(colorId)==null) {
-			throw new BusinessException("Böyle bir id mevcut değil.");
+		if(this.colorDao.getByColorId(colorId)!=null) {
+			return true;
 		}
-		return true;
+		throw new BusinessException("Böyle bir id mevcut değil.");
+		
 		
 	}
 	

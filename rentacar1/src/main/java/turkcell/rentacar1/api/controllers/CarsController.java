@@ -3,6 +3,7 @@ package turkcell.rentacar1.api.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,8 @@ import turkcell.rentacar1.business.requests.CreateCarRequest;
 import turkcell.rentacar1.business.requests.DeleteCarRequest;
 import turkcell.rentacar1.business.requests.UpdateCarRequest;
 import turkcell.rentacar1.core.concretes.BusinessException;
+import turkcell.rentacar1.core.utilities.results.DataResult;
+import turkcell.rentacar1.core.utilities.results.Result;
 
 @RestController
 @RequestMapping("/api/cars")
@@ -28,30 +31,43 @@ public class CarsController {
 		this.carService = carService;
 	}
 	
-	@GetMapping("/getall")
-	public List<ListCarDto> getAll(){
+	@GetMapping("/getAll")
+	public DataResult<List<ListCarDto>> getAll(){
 		return carService.getAll();
 	}
 	
 	@PostMapping("/add")
-	public void add(@RequestBody CreateCarRequest createCarRequest) throws BusinessException{
-		this.carService.add(createCarRequest);
+	public Result add(@RequestBody CreateCarRequest createCarRequest) throws BusinessException{
+		return this.carService.add(createCarRequest);
 	}
 	
 	@GetMapping("/getcarid")
-	public ListCarDto getByCarId(int carId) throws BusinessException{
+	public DataResult<ListCarDto> getByCarId(int carId) throws BusinessException{
 		return this.carService.getByCarId(carId);
 	}
 	
 	@PostMapping("/delete")
-	public void delete(@RequestBody DeleteCarRequest deleteCarRequest) throws BusinessException{
-		this.carService.delete(deleteCarRequest);
+	public Result delete(@RequestBody DeleteCarRequest deleteCarRequest) throws BusinessException{
+		return this.carService.delete(deleteCarRequest);
 	}
 	
 	@PostMapping("/update")
-	public void update(@RequestBody UpdateCarRequest updateCarRequest) throws BusinessException{
-		this.carService.update(updateCarRequest);
+	public Result update(@RequestBody UpdateCarRequest updateCarRequest) throws BusinessException{
+		return this.carService.update(updateCarRequest);
 	}
+	@GetMapping("/getAllPaged")
+	public DataResult<List<ListCarDto>> getAllPaged(int pageNo, int pageSize){
+		return this.carService.getAllPaged(pageNo, pageSize);
+	}
+	@GetMapping("/getAllSorted")
+	public DataResult<List<ListCarDto>> getAllSorted(Sort.Direction direction){
+		return this.carService.getAllSorted(direction);
+	}
+	@GetMapping("/getByDailyPrice")
+	public DataResult<List<ListCarDto>> getByDaiilyPrice(double dailyPrice){
+		return this.carService.getByDailyPriceLessThanEqual(dailyPrice);
+	}
+
 	
 	
 

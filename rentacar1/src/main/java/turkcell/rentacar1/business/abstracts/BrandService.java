@@ -7,14 +7,16 @@ import turkcell.rentacar1.business.requests.CreateBrandRequest;
 import turkcell.rentacar1.business.requests.DeleteBrandRequest;
 import turkcell.rentacar1.business.requests.UpdateBrandRequest;
 import turkcell.rentacar1.core.concretes.BusinessException;
+import turkcell.rentacar1.core.utilities.results.DataResult;
+import turkcell.rentacar1.core.utilities.results.Result;
 
 public interface BrandService {
 	
-		List<ListBrandDto> getAll();
-		void add(CreateBrandRequest createBrandRequest) throws BusinessException;
-		ListBrandDto getByBrandId(int brandId) throws BusinessException;
-		void delete(DeleteBrandRequest deleteBrandRequest) throws BusinessException;
-		void update(UpdateBrandRequest updateBrandRequest) throws BusinessException;
+		DataResult<List<ListBrandDto>> getAll();
+		Result add(CreateBrandRequest createBrandRequest) throws BusinessException;
+		DataResult<ListBrandDto> getByBrandId(int brandId);
+		Result delete(DeleteBrandRequest deleteBrandRequest) throws BusinessException;
+		Result update(UpdateBrandRequest updateBrandRequest) throws BusinessException;
 		
 		
 

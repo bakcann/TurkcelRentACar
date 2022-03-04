@@ -13,6 +13,12 @@ import turkcell.rentacar1.business.requests.DeleteBrandRequest;
 import turkcell.rentacar1.business.requests.UpdateBrandRequest;
 import turkcell.rentacar1.core.concretes.BusinessException;
 import turkcell.rentacar1.core.utilities.mapping.ModelMapperService;
+import turkcell.rentacar1.core.utilities.results.DataResult;
+import turkcell.rentacar1.core.utilities.results.ErrorDataResult;
+import turkcell.rentacar1.core.utilities.results.ErrorResult;
+import turkcell.rentacar1.core.utilities.results.Result;
+import turkcell.rentacar1.core.utilities.results.SuccessDataResult;
+import turkcell.rentacar1.core.utilities.results.SuccessResult;
 import turkcell.rentacar1.dataAccess.abstracts.BrandDao;
 import turkcell.rentacar1.entities.concretes.Brand;
 
@@ -30,73 +36,71 @@ public class BrandManager implements BrandService {
 	}
 
 	@Override
-	public List<ListBrandDto> getAll() {
+	public DataResult<List<ListBrandDto>> getAll() {
 		var result = this.brandDao.findAll();
-		List<ListBrandDto> response = result.stream().map(brand->this.modelMapperService.forDto().map(brand, ListBrandDto.class)).collect(Collectors.toList());
-		return response;
+		List<ListBrandDto> response = result.stream()
+				.map(brand->this.modelMapperService.forDto()
+						.map(brand, ListBrandDto.class)).collect(Collectors.toList());
+		return new SuccessDataResult<List<ListBrandDto>>(response);
 	}
 
 	@Override
-	public void add(CreateBrandRequest createBrandRequest) throws BusinessException {
+	public Result add(CreateBrandRequest createBrandRequest) throws BusinessException {
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);
-		if( !checkIfBrandId(brand.getBrandId())|| !checkIfBrandName(brand.getBrandName())) {
-			
-		}else {
+		if(checkIfBrandName(brand.getBrandName())) {
 			this.brandDao.save(brand);
+			return new SuccessResult("Marka eklendi.");
 		}
-		
+		return new ErrorResult("Marka eklenemedi.");
 	}
 
-
-	
 	@Override
-	public ListBrandDto getByBrandId(int brandId) throws BusinessException  {
+	public DataResult<ListBrandDto> getByBrandId(int brandId)   {
 		
 		var result = this.brandDao.getByBrandId(brandId);
 		if(result!=null) {
 			ListBrandDto response = this.modelMapperService.forDto().map(result, ListBrandDto.class);
-		return response;
+		return new SuccessDataResult<ListBrandDto>(response);
 		}
-		throw new BusinessException("Bu id boş.");	
+		return new ErrorDataResult<ListBrandDto>("Bu id boş.");	
 	}
 
 	@Override
-	public void delete(DeleteBrandRequest deleteBrandRequest) throws BusinessException {
+	public Result delete(DeleteBrandRequest deleteBrandRequest) throws BusinessException {
 		Brand brand=this.modelMapperService.forRequest().map(deleteBrandRequest, Brand.class);
-		if(!checkIfBrandId(brand.getBrandId())) {
-		}else {
+		if(checkIfBrandId(brand.getBrandId())) {
 			this.brandDao.deleteById(brand.getBrandId());
+			return new SuccessResult("Marka silindi.");
 		}
-		
+		return new ErrorResult("Marka silinemedi.");
 	}
 
 	@Override
-	public void update(UpdateBrandRequest updateBrandRequest) throws BusinessException {
+	public Result update(UpdateBrandRequest updateBrandRequest) throws BusinessException {
 		Brand brand = this.modelMapperService.forRequest().map(updateBrandRequest, Brand.class);
 		
-		if(!checkIfBrandId(brand.getBrandId()) || !checkIfUpdateBrandName(brand.getBrandName())) {
-			
-		}else {
+		if(checkIfBrandId(brand.getBrandId()) && checkIfUpdateBrandName(brand.getBrandName())) {
 			this.brandDao.save(brand);
-			
+			return new SuccessResult("Marka güncellendi.");
 		}
-	
-		
+		return new ErrorResult("Marka güncellenemedi.");
 	}
 	
 	private boolean checkIfBrandName(String brandName) throws BusinessException {
-		if(this.brandDao.getByBrandName(brandName)!=null) {
-			throw new BusinessException("Bu marka daha önce eklenmiştir.");
+		if(this.brandDao.getByBrandName(brandName)==null) {
+			return true;
 		}
-		return true;
+		throw new BusinessException("Bu marka daha önce eklenmiştir.");
+		
 		
 	}
 	
 	private boolean checkIfBrandId(int brandId)throws BusinessException{
-		if(this.brandDao.getByBrandId(brandId)==null) {
-			throw new BusinessException("Böyle bir id mevcut değil.");
+		if(this.brandDao.getByBrandId(brandId)!=null) {
+			return true;
 		}
-		return true;
+		throw new BusinessException("Böyle bir id mevcut değil.");
+		
 		
 	}
 	
