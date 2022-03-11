@@ -1,9 +1,8 @@
 package turkcell.rentacar1.business.requests;
 
-import java.time.LocalDate;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,18 +11,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCarMaintenanceRequest {
+public class UpdateAdditionalServiceRequest {
+	
+private int additionalServiceId;
+	
+	@NotNull
+	@Size(min = 1, max=250)
+	private String additionalServiceName;
 	
 	@NotNull
 	@Positive
-	private int maintenanceId;
-	
-	@NotNull
-	private String description;
-	
-	@NotNull
-	private LocalDate returnDate;
-	
-	
+	private double additionalPrice;
 
 }

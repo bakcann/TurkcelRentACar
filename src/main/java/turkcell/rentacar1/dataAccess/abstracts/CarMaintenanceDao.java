@@ -12,7 +12,7 @@ public interface CarMaintenanceDao extends JpaRepository<CarMaintenance, Integer
 	
 	CarMaintenance getByMaintanenceId(int maintanenceId);
 	
-	CarMaintenance getByReturnDateIsNull(int carId);
+	CarMaintenance getCarMaintenanceByCarCarIdAndReturnDateIsNull(int carId);
 	
 	List<CarMaintenance> getByCar_CarId(int carId);
 

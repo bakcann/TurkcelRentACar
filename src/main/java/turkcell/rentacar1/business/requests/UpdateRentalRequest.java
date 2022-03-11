@@ -32,5 +32,9 @@ public class UpdateRentalRequest {
 	@Positive
 	private int customerId;
 	
+	@NotNull
+	@Positive
+	private int additionalServiceId;
+	
 
 }

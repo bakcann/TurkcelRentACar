@@ -29,4 +29,6 @@ public interface CarService {
 	DataResult<List<ListCarDto>> getAllSorted(Sort.Direction direction);
 	
 	DataResult<List<ListCarDto>> getByDailyPriceLessThanEqual(double dailyPrice);
+	
+	boolean checkIfCarId(int carId) throws BusinessException;
 }

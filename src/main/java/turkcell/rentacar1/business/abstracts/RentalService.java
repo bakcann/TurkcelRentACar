@@ -23,13 +23,20 @@ public interface RentalService {
 	
 	DataResult<List<ListRentalDto>> getAll();
 	
-	DataResult<GetListRentalDto> getByRentalId(int rentId);
-	
 	DataResult<List<ListRentalDto>> getAllPaged(int pageNo, int pageSize);
 	
 	DataResult<List<ListRentalDto>> getAllSorted(Sort.Direction direction);
 	
-	DataResult<ListRentalDto> getByCar_CarId(int carId);
+	DataResult<GetListRentalDto> getByRentalId(int rentId) throws BusinessException;
+	
+	List<ListRentalDto> getByCar_CarId(int carId) throws BusinessException;
+	
+	boolean checkIfRentCarId(int carId) throws BusinessException;	
+	
+	boolean checkIfRentCarReturnDate(int carId) throws BusinessException;
+	
+	
+	
 	
 	
 

@@ -17,11 +17,17 @@ public class CreateRentalRequest {
 	@NotNull
 	private LocalDate rentDate;
 	
+	@NotNull
 	@Positive
 	private int carId;
 	
+	@NotNull
 	@Positive
 	private int customerId;
+	
+	@NotNull
+	@Positive
+	private int additionalServiceId;
 	
 
 }

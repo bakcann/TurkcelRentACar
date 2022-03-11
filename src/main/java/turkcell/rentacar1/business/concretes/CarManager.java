@@ -131,8 +131,8 @@ public class CarManager implements CarService{
 		
 		return new SuccessDataResult<List<ListCarDto>>(response);
 	}
-	
-	private boolean checkIfCarId(int carId)throws BusinessException{
+	@Override
+	public boolean checkIfCarId(int carId)throws BusinessException{
 		if(this.carDao.getByCarId(carId)!=null) {
 			return true;
 		}

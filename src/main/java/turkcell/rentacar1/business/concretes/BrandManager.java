@@ -44,6 +44,8 @@ public class BrandManager implements BrandService {
 		return new SuccessDataResult<List<ListBrandDto>>(response);
 	}
 
+	
+	//500 hatasını kullanıcı görmemeli.
 	@Override
 	public Result add(CreateBrandRequest createBrandRequest) throws BusinessException {
 		Brand brand = this.modelMapperService.forRequest().map(createBrandRequest, Brand.class);

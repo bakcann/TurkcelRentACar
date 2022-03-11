@@ -20,5 +20,7 @@ public class GetListRentalDto {
 	private int carId;
 	
 	private int customerId;
+	
+	private String additionalServiceName;
 
 }
